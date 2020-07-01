@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # validaciones_crud
 
 A new Flutter project.
@@ -14,3 +15,7 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter, view our
 [online documentation](https://flutter.dev/docs), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+=======
+# Flutter-Udemy-CRUD
+En este repo iré subiendo lo que he aprendido en el curso de Fernando Herrera donde se hace distintos ejercicios del CRUD para manejar información, se llega ver una app interesante de fotografías usando firebase y el patrón bloc
+>>>>>>> 96fb1455147b2482c0e3a065ae779a52bd67d9aa
