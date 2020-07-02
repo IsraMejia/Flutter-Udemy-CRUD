@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:validaciones_crud/src/models/producto_model.dart';
+import 'package:validaciones_crud/src/providers/productos_provider.dart';
 import 'package:validaciones_crud/src/utils/utils.dart' as utils; //Forma de importarlo xd
 
 class ProductoPage extends StatefulWidget {
@@ -12,6 +13,7 @@ class _ProductoPageState extends State<ProductoPage> {
   final formKey = GlobalKey<FormState>();
 
   ProductoModel producto = new ProductoModel();
+  final productoProvider = new ProductosProvider();
 
   @override
   Widget build(BuildContext context) {
@@ -99,10 +101,13 @@ class _ProductoPageState extends State<ProductoPage> {
       return; //Si no es valido no hace nada xd, solo cambia el estado para pintar el error
     }
     formKey.currentState.save(); //Ahora si pasa la informacion para guardarse en el json
-    print('Entradas validas');
+    print('las entradas son validas');
     print(producto.titulo);
     print(producto.valor);
     print(producto.disponible);
+
+    productoProvider.crearProducto(producto);
+
   }
 
   _crearDisponible(){
