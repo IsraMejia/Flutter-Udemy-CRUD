@@ -6,12 +6,29 @@ export 'package:validaciones_crud/src/bloc/login_bloc.dart';
 
 class Provider extends InheritedWidget {
 //Todo esto sirve para 
-  
-  final loginBloc = LoginBloc();
 
-  Provider( {Key key,  Widget child} ) 
+  //Para no perder la informacion se hara uso de un factory
+  static Provider _instancia;
+  factory Provider ({Key key,  Widget child}){
+    if(_instancia == null){
+      _instancia =new Provider._internal(key: key, child: child) ;
+    }
+    return _instancia;
+    /*Si ya se tenia la instancia se manda en el hotreload para que no se pierda sus datos
+    caso contrario se crea */
+  }
+
+  Provider._internal( {Key key,  Widget child} ) 
     : super (key : key , child : child);
+  
+  final loginBloc = LoginBloc(); 
+
+  //Al inicializarla asi, con cada hotreload se perdia los streams (email, contraseña)
+  // Provider( {Key key,  Widget child} ) 
+  //   : super (key : key , child : child);
   //Constructor que manda a llamar la clase padre para asignar su llave y su hijo
+
+  
 
   @override
   bool updateShouldNotify(InheritedWidget oldWidget) => true;

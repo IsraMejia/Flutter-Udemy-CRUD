@@ -100,13 +100,13 @@ class LoginPage extends StatelessWidget {
             ),
             child: Column(
               children: <Widget>[
-                Text('Ingreso', style: TextStyle(fontSize: 20.0)),
+                Text('Ingresar', style: TextStyle(fontSize: 21.5 , color: Colors.blueGrey[900])),
                 SizedBox(height:40.0),
                 _crearEmail(bloc),
                 SizedBox(height:10.0),
                 _crearPassword(bloc),
                 SizedBox(height:10.0),
-                _crearBoton()
+                _crearBoton(bloc)
               ],
             ),
           ),
@@ -135,7 +135,8 @@ class LoginPage extends StatelessWidget {
             icon: Icon( Icons.alternate_email, color: Colors.deepPurple ),
             hintText: 'ejemplo@correo.com',
             labelText: 'Correo Electronico',
-            counterText: snapshot.data
+            counterText: snapshot.data,
+            errorText: snapshot.error //pregunta si hay un error en el validators
           ) ,
         onChanged: (value) => bloc.changeEmail(value),
         //manda el valor de la cadena que acaba de cambiar
@@ -148,7 +149,7 @@ class LoginPage extends StatelessWidget {
   Widget _crearPassword(LoginBloc bloc){
 
     return StreamBuilder(
-      stream: bloc.passwordStram,
+      stream: bloc.passwordStream,
       builder: (BuildContext context, AsyncSnapshot snapshot ){
       return Container(
         padding: EdgeInsets.all(20.0),
@@ -157,7 +158,9 @@ class LoginPage extends StatelessWidget {
           decoration: InputDecoration(
             icon: Icon( Icons.lock_outline , color: Colors.deepPurple ),
             labelText: 'Contraseña',
-            counterText: snapshot.data
+            counterText: snapshot.data,
+            errorText: snapshot.error //pregunta si hay un error en el validators
+             //con una cadena te pone el error, null no.
           ) ,
           onChanged: bloc.changePassword,
         ),
@@ -166,19 +169,33 @@ class LoginPage extends StatelessWidget {
     );
   }//crearPassword
 
-  Widget _crearBoton(){
-    return RaisedButton(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(30.0)
-      ),
-      elevation: 0.5,//Sin sombra que tiene por defecto
-      onPressed: (){},
-      color: Colors.deepPurple,
-      child: Container(
-        child: Text('Ingresar', style: TextStyle(color: Colors.white, fontSize: 18.0 ),), 
-        padding: EdgeInsets.symmetric(horizontal: 80.0, vertical: 15.0)
-      )
+  Widget _crearBoton(LoginBloc bloc){
+
+    return StreamBuilder(
+      stream: bloc.formValidStream ,
+      builder: (BuildContext context, AsyncSnapshot snapshot){
+       return RaisedButton(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30.0)
+        ),
+        elevation: 0.5,//Sin sombra que tiene por defecto
+        onPressed: snapshot.hasData ? ()=>_login(bloc, context) : null  , //Si se valido ambos campos se habilita
+        color: Colors.deepPurple,
+        child: Container(
+          child: Text('Ingresar', style: TextStyle(color: Colors.white, fontSize: 18.0 ),), 
+          padding: EdgeInsets.symmetric(horizontal: 80.0, vertical: 15.0)
+        )
+      );
+      }
     );
   }//_crearBoton
+
+  _login(LoginBloc bloc , BuildContext context){
+    print('Tu email,es : ${bloc.email} ');
+    print('password: ${bloc.password} ');
+
+   // Navigator.pushNamed(context, 'home');//Te pone el boton de back
+   Navigator.pushReplacementNamed(context, 'home');
+  }
 
 }//LoginPage
