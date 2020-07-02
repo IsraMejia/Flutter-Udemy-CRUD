@@ -13,15 +13,17 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         title: Text('Home page xD'),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center ,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Text('Tu email,es : ${bloc.email} '),
-          Divider(),
-          Text('password: ${bloc.password} '),
-        ],
-      ),
+      body: Container(),
+      floatingActionButton: _crearBoton(context),
+      
     );
+  }//build
+
+  _crearBoton(BuildContext context) {
+    return FloatingActionButton(
+      onPressed:()=> Navigator.pushNamed(context, 'producto') ,
+      child: Icon(Icons.shopping_cart),
+      backgroundColor: Colors.deepPurple[500],
+      );
   }
 }
