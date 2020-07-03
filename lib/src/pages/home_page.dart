@@ -41,15 +41,22 @@ class HomePage extends StatelessWidget {
   }
 
   Widget _crearItem(BuildContext context ,ProductoModel producto){
-    return Dismissible(
+    return 
+      Dismissible(//borra visualmente y del dispositivo
         key: UniqueKey(),
         background: Container(
           color: Colors.deepOrange[800],
         ),
+        onDismissed: (direccion){
+          productosProvider.borrarProducto(producto.id);
+        },//lo borra de firebase
         child: ListTile(
           title: Text('${producto.titulo}  -  ${producto.valor }'),
           subtitle: Text(producto.id),
-          onTap: () => Navigator.pushNamed(context, 'producto'),
+          onTap: () => Navigator.pushNamed(
+            context, 'producto',
+            arguments: producto //Se manda el producto entero para que se pueda modificar
+          ),
         ),
     );
   }

@@ -37,7 +37,7 @@ class ProductoModel {
 
     Map<String, dynamic> toJson() => {
     //Mapa lo pasa a JSON, toma el mapa y lo pasa a JSON
-        "id"        : id,
+        // "id"        : id, //No se manda porque al editar los items se duplica
         "titulo"    : titulo,
         "valor"     : valor,
         "disponible": disponible,

@@ -10,14 +10,28 @@ class ProductoPage extends StatefulWidget {
 }
 
 class _ProductoPageState extends State<ProductoPage> {
+
   final formKey = GlobalKey<FormState>();
+  final scaffoldKey = GlobalKey<ScaffoldState>();
 
   ProductoModel producto = new ProductoModel();
   final productoProvider = new ProductosProvider();
 
+  bool _guardando =false;
+
   @override
   Widget build(BuildContext context) {
+
+    final ProductoModel prodArgData = ModalRoute.of(context).settings.arguments;
+    //Se declara el prodArgData que recibe como argumento el producto seleccionado en el Homepage
+    //en caso de que se construya la pagina y no venga el producto solo se recibe un null
+
+    if(prodArgData != null){
+      producto = prodArgData;
+    } //Con solo esto ya se pone todo lo demas en automatico gracias al Initial Value
+
     return Scaffold(
+      key: scaffoldKey,//El identificador del scaffold para el snackbar
       appBar: AppBar(
         title: Text('Productos'),
         actions: <Widget>[
@@ -92,7 +106,9 @@ class _ProductoPageState extends State<ProductoPage> {
       ),
       color: Colors.deepPurple[500] ,
       textColor: Colors.blueGrey[50],
-      onPressed: _submit,//Se dispara cuando se apriete
+      onPressed: (_guardando)  ? null : _submit,
+      //Si no ha sido presionado en esos momentos hace el sumit, de esta manera no se
+      //hace la misma consulta varias veces
     );
   }
 
@@ -101,12 +117,19 @@ class _ProductoPageState extends State<ProductoPage> {
       return; //Si no es valido no hace nada xd, solo cambia el estado para pintar el error
     }
     formKey.currentState.save(); //Ahora si pasa la informacion para guardarse en el json
-    print('las entradas son validas');
-    print(producto.titulo);
-    print(producto.valor);
-    print(producto.disponible);
 
-    productoProvider.crearProducto(producto);
+    if(producto.id == null){//Si no existe el ID de firebase
+      productoProvider.crearProducto(producto);
+    }else{
+      productoProvider.editarProducto(producto);
+    }
+    
+    // setState(() {
+    //   _guardando =true; //se guardo, ayudara a bloquear el boton
+    // });
+    mostrarSnackBar('registro guardaado');
+
+    Navigator.pop(context);//te manda a la pagina anterior
 
   }
 
@@ -120,6 +143,17 @@ class _ProductoPageState extends State<ProductoPage> {
       })
     );
   }
+
+  void mostrarSnackBar(String mensajeSB){
+    final snackBar = SnackBar(
+      content: Text(mensajeSB),
+      duration: Duration(milliseconds: 1500),
+    );
+
+    //Se necesita hacer referencia al Scaffold porquesolo el puede pintar el appbar
+    scaffoldKey.currentState.showSnackBar(snackBar );
+    
+  }//mostrarSnackBar()
 
 
 }//class ProductoPage
