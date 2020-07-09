@@ -1,4 +1,7 @@
+// import 'dart:html';
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:validaciones_crud/src/models/producto_model.dart';
 import 'package:validaciones_crud/src/providers/productos_provider.dart';
 import 'package:validaciones_crud/src/utils/utils.dart' as utils; //Forma de importarlo xd
@@ -18,6 +21,8 @@ class _ProductoPageState extends State<ProductoPage> {
   final productoProvider = new ProductosProvider();
 
   bool _guardando =false;
+  File _image;
+  final picker = ImagePicker();
 
   @override
   Widget build(BuildContext context) {
@@ -36,10 +41,10 @@ class _ProductoPageState extends State<ProductoPage> {
         title: Text('Productos'),
         actions: <Widget>[
           IconButton(icon: Icon(Icons.photo_size_select_actual),
-           onPressed: (){} 
+           onPressed: _seleccionarFoto ,
           ),
           IconButton(icon: Icon(Icons.camera_alt ),
-           onPressed: (){} 
+           onPressed: _tomarFoto ,
           )
         ],
       ),
@@ -50,6 +55,7 @@ class _ProductoPageState extends State<ProductoPage> {
           key: formKey ,
           child: Column(
             children: <Widget>[
+              _mostrarFoto(),
               _crearNombre(),
               _crearPrecio(),
               _crearDisponible(),
@@ -123,11 +129,11 @@ class _ProductoPageState extends State<ProductoPage> {
     }else{
       productoProvider.editarProducto(producto);
     }
-    
-    // setState(() {
-    //   _guardando =true; //se guardo, ayudara a bloquear el boton
-    // });
     mostrarSnackBar('registro guardaado');
+    
+    setState(() {
+      _guardando =false; //se guardo, ayudara a bloquear el boton
+    });
 
     Navigator.pop(context);//te manda a la pagina anterior
 
@@ -144,16 +150,53 @@ class _ProductoPageState extends State<ProductoPage> {
     );
   }
 
-  void mostrarSnackBar(String mensajeSB){
+  void mostrarSnackBar(String mensaje){
     final snackBar = SnackBar(
-      content: Text(mensajeSB),
-      duration: Duration(milliseconds: 1500),
+      content: Text(mensaje),
+      duration: Duration(milliseconds: 2200),
     );
 
     //Se necesita hacer referencia al Scaffold porquesolo el puede pintar el appbar
-    scaffoldKey.currentState.showSnackBar(snackBar );
+    scaffoldKey.currentState.showSnackBar(snackBar);
     
   }//mostrarSnackBar()
+
+  Widget _mostrarFoto(){
+    if(producto.fotoUrl != null ){
+      return Container(
+
+      );
+    }else{
+      return  Image(
+          image: AssetImage(   "assets/no-image.jpg"),
+          //si la foto tiene un valor poner ese, si no el asstet
+          height: 300.0,
+          fit: BoxFit.cover,//mantiene dimensiones
+        );
+      
+    }
+  }
+
+
+  _seleccionarFoto() async {
+    final pickedFile = await picker.getImage(source: ImageSource.gallery );
+
+    setState(() {
+      _image = File(pickedFile.toString());
+    });
+
+  }//_seleccionarFoto()
+
+
+  Future  _tomarFoto() async {
+    final pickedFile = await picker.getImage(source: ImageSource.camera);
+
+    setState(() {
+      _image = File(pickedFile.toString());
+    });
+  }//_tomarFoto()
+
+
 
 
 }//class ProductoPage
